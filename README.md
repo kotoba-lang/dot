@@ -1,5 +1,7 @@
 # dot-clj (グラフ記述)
 
+[![CI](https://github.com/kotoba-lang/dot/actions/workflows/ci.yml/badge.svg)](https://github.com/kotoba-lang/dot/actions/workflows/ci.yml)
+
 Handle **Graphviz DOT language as EDN/Clojure data** in portable Clojure — every
 namespace is `.cljc`, with **zero third-party runtime deps**, so it runs on the JVM,
 ClojureScript, and Clojure-on-WASM hosts (SCI). A DOT graph is plain data you can
