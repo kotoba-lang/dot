@@ -137,7 +137,7 @@
           in-deg  (reduce (fn [m id]
                             (assoc m id (count (in-edges g id))))
                           {} ids)
-          queue   (into (clojure.lang.PersistentQueue/EMPTY)
+          queue   (into clojure.lang.PersistentQueue/EMPTY
                         (sort (filter #(zero? (get in-deg %)) ids)))
           step    (fn [result queue in-deg]
                     (if (empty? queue)
