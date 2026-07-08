@@ -247,9 +247,19 @@
 (defn- quote-id
   "Wrap id in double quotes if it contains spaces or special chars."
   [id]
-  (if (re-find #"[\s\[\]{},;=\"]" (str id))
-    (str "\"" (str/replace (str id) "\"" "\\\"") "\"")
-    id))
+  (let [s (str id)]
+    (if (re-find #"[\s\[\]{},;=\"\\]" s)
+      ;; Backslash MUST be escaped first -- escaping " before \ would let a
+      ;; pre-existing \ in the id combine with the just-inserted \" into an
+      ;; escaped-quote sequence \\", which a DOT parser reads as \\ (literal
+      ;; backslash) followed by an UNESCAPED " that closes the quoted id
+      ;; early. The rest of the id then reads as new DOT syntax (attribute
+      ;; lists, additional node statements) -- verified via this repo's own
+      ;; parse-str: a single crafted node id desynced into three separate
+      ;; nodes on reparse, with attacker-controlled attributes attached to
+      ;; the fabricated ones.
+      (str "\"" (-> s (str/replace "\\" "\\\\") (str/replace "\"" "\\\"")) "\"")
+      s)))
 
 (defn- emit-attrs [attrs]
   (let [ks (sort (keys attrs))]

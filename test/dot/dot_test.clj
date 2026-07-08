@@ -37,6 +37,27 @@
     (is (= (count (:dot/edges original)) (count (:dot/edges roundtripped))))))
 
 ;; ---------------------------------------------------------------------------
+;; 2b. A backslash in an id must round-trip exactly, not desync the parser
+;; ---------------------------------------------------------------------------
+(deftest quoted-id-with-backslash-round-trips-exactly
+  (testing "a bare backslash-then-quote must not let the quote close early"
+    (let [g {:dot/id "G" :dot/directed true :dot/graph-attrs {}
+             :dot/nodes {"a\\\"b" {:dot/attrs {}}} :dot/edges []}
+          roundtripped (-> g d/emit-str d/parse-str)]
+      (is (= #{"a\\\"b"} (set (keys (:dot/nodes roundtripped)))))))
+  (testing "a crafted id containing DOT structural syntax must not inject
+            extra nodes/attributes on reparse (verified structural
+            injection: before the fix, this exact id desynced into three
+            separate nodes, with attacker-controlled color/shape attrs
+            attached to two fabricated ones)"
+    (let [evil-id "a\\\"b [color=red] evilnode [shape=box"
+          g {:dot/id "G" :dot/directed true :dot/graph-attrs {}
+             :dot/nodes {evil-id {:dot/attrs {}}} :dot/edges []}
+          roundtripped (-> g d/emit-str d/parse-str)]
+      (is (= #{evil-id} (set (keys (:dot/nodes roundtripped)))))
+      (is (empty? (get-in roundtripped [:dot/nodes evil-id :dot/attrs]))))))
+
+;; ---------------------------------------------------------------------------
 ;; 3. Edge auto-creates its endpoints as nodes
 ;; ---------------------------------------------------------------------------
 (deftest edge-auto-creates-nodes
