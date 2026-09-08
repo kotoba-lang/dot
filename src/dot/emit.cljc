@@ -1,6 +1,6 @@
 (ns dot.emit
   "Concise EDN hiccup-style emitter for Graphviz DOT."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (defn- id [x] (if (keyword? x) (name x) (str x)))
 

@@ -18,7 +18,7 @@
 
   Limitations: no subgraphs/clusters, no HTML labels (<...>), no ports (:port),
   no compass points. Attribute values must be string scalars."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 ;; ---------------------------------------------------------------------------
 ;; Tokeniser
@@ -222,9 +222,9 @@
   [s]
   (let [toks    (tokenise s)
         i0      0
-        strict? (= "strict" (str/lower-case (get toks i0 "")))
+        strict? (= "strict" (str/lower (get toks i0 "")))
         i1      (if strict? 1 0)
-        kw      (str/lower-case (get toks i1 ""))
+        kw      (str/lower (get toks i1 ""))
         directed? (= kw "digraph")
         i2      (inc i1)
         ;; graph id (may be missing if next token is "{")
