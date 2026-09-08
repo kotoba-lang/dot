@@ -1,5 +1,5 @@
 (ns dot.emit-test
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [clojure.test :refer [deftest is]]
             [dot.dot :as parser]
             [dot.emit :as d]
