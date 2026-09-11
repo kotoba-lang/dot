@@ -98,5 +98,5 @@ no compass points. Attribute values must be string scalars.
 ## Test
 
 ```
-clojure -M:test
+kbb -M:test
 ```
